@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@theme {
+  /* Purple identity. Legacy names (navy/teal/aqua/mist) stay as aliases so every screen shifts together. */
+  --color-plum: #2b2140;
+  --color-violet: #7c3aed;
+  --color-violet-soft: #a78bfa;
+  --color-lilac: #d9ccff;
+  --color-lavender: #f4f0ff;
+  --color-lavender-deep: #e9e0ff;
+  --color-navy: #2b2140;
+  --color-teal: #7c3aed;
+  --color-aqua: #d9ccff;
+  --color-mist: #f4f0ff;
+  --color-ink: #2b2140;
+  --color-muted: #7a7290;
+  --color-line: #e9e2f8;
+  --color-success: #15803d;
+  --color-warning: #b45309;
+  --color-danger: #c63d53;
+  --shadow-card: 0 10px 30px rgba(84, 56, 160, 0.08);
+  --radius-card: 22px;
+  --font-sans: var(--font-plex), "IBM Plex Sans Arabic", sans-serif;
+  --font-weight-extrabold: 700;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--color-mist);
+    color: var(--color-ink);
+    font-family: var(--font-plex), "IBM Plex Sans Arabic", sans-serif;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+  :focus-visible {
+    outline: 2px solid #7c3aed;
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: #d9ccff;
+    color: #2b2140;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+.font-latin {
+  font-family: var(--font-montserrat), var(--font-plex), sans-serif;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.btn-violet {
+  background: linear-gradient(135deg, #9b6bff 0%, #7c3aed 100%);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(124, 58, 237, 0.28);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

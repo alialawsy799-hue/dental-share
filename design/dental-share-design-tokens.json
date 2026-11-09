@@ -1,0 +1,39 @@
+{
+  "brand": {
+    "name": "Dental Share",
+    "nameArabic": "دينتال شير",
+    "taglineArabic": "عيادتك، خدماتك، مجتمعك",
+    "status": "provisional proposed identity"
+  },
+  "colors": {
+    "primary": "#0B2545",
+    "secondary": "#00B8A9",
+    "accent": "#6EE7D6",
+    "background": "#F2F7FA",
+    "surface": "#FFFFFF",
+    "text": "#0B2545",
+    "muted": "#64748B",
+    "border": "#DCE7ED",
+    "success": "#16856A",
+    "warning": "#B77713",
+    "danger": "#C63D53"
+  },
+  "typography": {
+    "arabic": ["IBM Plex Sans Arabic", "sans-serif"],
+    "english": ["IBM Plex Sans Arabic", "Montserrat", "sans-serif"]
+  },
+  "layout": {
+    "radiusCard": "18px",
+    "radiusButton": "12px",
+    "radiusInput": "12px",
+    "baseSpacing": "4px",
+    "cardShadow": "0 8px 24px rgba(11,37,69,0.06)",
+    "mobileBottomNavItems": 5,
+    "directionDefault": "rtl"
+  },
+  "logo": {
+    "intent": "stylized dental motif + connection/share nodes + optional DS monogram",
+    "versionsRequired": ["full-horizontal", "stacked", "icon-only", "monochrome-dark", "monochrome-light"],
+    "rule": "Simplify for small sizes and test legibility at 24px. Generated reference images are concept sketches, not vectors or final brand standards."
+  }
+}
