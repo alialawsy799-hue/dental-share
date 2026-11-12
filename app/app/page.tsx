@@ -116,7 +116,7 @@ export default async function DoctorHome() {
 
       <div className="mt-4 grid grid-cols-4 gap-2.5">
         {shortcuts.map((item) => (
-          <Link key={item.href} href={item.href} className="glass flex aspect-[0.9] flex-col items-center justify-center gap-2 rounded-[22px] shadow-card">
+          <Link key={item.href} href={item.href} prefetch className="glass flex aspect-[0.9] flex-col items-center justify-center gap-2 rounded-[22px] shadow-card">
             <IconBadge name={item.icon} size="sm" />
             <span className="px-1 text-center text-[11px] font-bold leading-tight text-plum">{d[item.key]}</span>
           </Link>
@@ -127,7 +127,7 @@ export default async function DoctorHome() {
         <SectionHead title={d.quickActions} hint={d.quickHint} />
         <div className="grid gap-3">
           {actions.map((item) => (
-            <Link key={item.title} href={item.href} className="glass flex items-center gap-3 rounded-[22px] p-3.5 shadow-card">
+            <Link key={item.title} href={item.href} prefetch className="glass flex items-center gap-3 rounded-[22px] p-3.5 shadow-card">
               <IconBadge name={item.icon} />
               <span className="min-w-0 flex-1">
                 <span className="block text-[15px] font-extrabold text-plum">{d[item.title]}</span>

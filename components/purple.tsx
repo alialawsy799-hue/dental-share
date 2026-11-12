@@ -52,7 +52,7 @@ export function SectionHead({
         {hint ? <p className="text-[13px] text-muted">{hint}</p> : null}
       </div>
       {action ? (
-        <Link href={action.href} className="shrink-0 text-[13px] font-bold text-violet">
+        <Link href={action.href} prefetch className="shrink-0 text-[13px] font-bold text-violet">
           {action.label}
         </Link>
       ) : null}

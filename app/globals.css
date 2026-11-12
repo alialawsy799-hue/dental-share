@@ -72,3 +72,58 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+.page-enter {
+  animation: page-enter 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.route-progress {
+  pointer-events: none;
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  z-index: 50;
+  height: 3px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.route-progress.is-on {
+  opacity: 1;
+}
+
+.route-progress.is-on::after {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 38%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #c4b5fd, #7c3aed);
+  animation: route-indeterminate 0.85s ease-in-out infinite;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0.55;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes route-indeterminate {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(280%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .route-progress.is-on::after {
+    animation: none;
+  }
+}

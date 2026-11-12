@@ -22,6 +22,7 @@ export function DoctorShell({ lang, children }: { lang: Lang; children: ReactNod
           <AppLogo />
           <Link
             href="/app/notifications"
+            prefetch
             aria-label={d.notifications}
             className="glass grid h-11 w-11 place-items-center rounded-2xl text-plum shadow-card"
           >
