@@ -612,6 +612,7 @@ export const IDS = {
   layla: "user_layla",
   reception: "user_reception",
   accountant: "user_accountant",
+  deskNoor: "user_noor_desk",
   sara: "user_sara",
   labManager: "user_lab_mgr",
   labTech: "user_lab_tech",

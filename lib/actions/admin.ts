@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { ActionState } from "@/lib/actions/types";
-import { getDb } from "@/lib/demo/db";
+import { getDb, persistDemoExtras } from "@/lib/demo/db";
 import { requireActor } from "@/lib/demo/session";
 import { createClinicWithAccess, provisionClinicAccess, setClinicStatus } from "@/lib/domain/admin";
 import { AccessError } from "@/lib/domain/errors";
@@ -36,6 +36,7 @@ export async function createClinicAction(_prev: ActionState, formData: FormData)
     });
     if (!result.ok) return { error: result.error, fieldErrors: result.fieldErrors };
     id = result.data.id;
+    await persistDemoExtras();
   } catch (error) {
     const known = fromAccess(error);
     if (known) return known;
@@ -56,6 +57,7 @@ export async function provisionClinicAction(_prev: ActionState, formData: FormDa
       systemEmail: formText(formData, "systemEmail"),
     });
     if (!result.ok) return { error: result.error, fieldErrors: result.fieldErrors };
+    await persistDemoExtras();
   } catch (error) {
     const known = fromAccess(error);
     if (known) return known;

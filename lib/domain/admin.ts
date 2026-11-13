@@ -149,6 +149,7 @@ export function listAudit(db: Database, actor: Actor, clinicId?: string) {
 
 const NAME_SLUGS: [string, string][] = [
   ["النور", "noor"],
+  ["نور", "noor"],
   ["الشمس", "shams"],
   ["الرافدين", "rafidain"],
   ["الأمل", "amal"],

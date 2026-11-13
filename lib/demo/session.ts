@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getDb } from "@/lib/demo/db";
+import { getDb, restoreDemoExtras } from "@/lib/demo/db";
 import { homeForRole, toActor, type Actor, type Role } from "@/lib/domain/types";
 
 const COOKIE = "ds_actor";
@@ -10,6 +10,7 @@ export function demoMode(): boolean {
 }
 
 export async function getActor(): Promise<Actor | null> {
+  await restoreDemoExtras();
   const jar = await cookies();
   const id = jar.get(COOKIE)?.value;
   if (!id) return null;

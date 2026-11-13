@@ -1,6 +1,7 @@
 import type { Database, TimelineEvent } from "./types";
 import {
   ACCOUNTANT_PERMISSIONS,
+  DESK_PERMISSIONS,
   DOCTOR_PERMISSIONS,
   IDS,
   OWNER_PERMISSIONS,
@@ -72,6 +73,20 @@ export function createDatabase(): Database {
         permissions: ACCOUNTANT_PERMISSIONS,
         locale: "ar",
         notificationPrefs: { appointments: false, orders: true, community: false },
+      },
+      {
+        id: IDS.deskNoor,
+        email: "noor.clinic@dentalshare.demo",
+        password: "NoorClinic@2026",
+        name: "عيادة النور لطب الأسنان",
+        role: "clinic_desk",
+        title: "نظام حجوزات العيادة",
+        clinicId: IDS.clinicA,
+        verified: true,
+        city: "بغداد",
+        permissions: DESK_PERMISSIONS,
+        locale: "ar",
+        notificationPrefs: { appointments: true, orders: false, community: false },
       },
       {
         id: IDS.sara,
@@ -197,6 +212,15 @@ export function createDatabase(): Database {
         branchName: "الفرع الرئيسي",
         specialty: "طب أسنان عام · تجميل",
         joinedAt: "2026-01-12",
+        systemEmail: "noor.clinic@dentalshare.demo",
+        access: {
+          systemEmail: "noor.clinic@dentalshare.demo",
+          systemPassword: "NoorClinic@2026",
+          doctorEmail: "ahmed@dentalshare.demo",
+          doctorPassword: "Ahmed@2026",
+          doctorName: "د. أحمد كريم",
+          provisionedAt: "2026-01-12T09:00:00+03:00",
+        },
       },
       {
         id: IDS.clinicB,

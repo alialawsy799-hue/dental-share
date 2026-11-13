@@ -11,7 +11,7 @@ export default async function EnterPage({ searchParams }: { searchParams: Promis
       <AppLogo />
       <h1 className="mt-10 text-3xl font-extrabold text-navy">تسجيل الدخول</h1>
       <p className="mt-2 text-sm leading-7 text-muted">
-        إيميل نظام العيادة يفتح نظام الحجوزات. حساب الطبيب يفتح تطبيق الطبيب لنفس العيادة. بقية البوابات تستخدم البريد وكلمة المرور من ملف الحسابات.
+        اختر حساب عيادة النور من الأزرار ثم اضغط تسجيل الدخول. إيميل النظام يفتح الحجوزات، وحساب الطبيب يفتح تطبيق العيادة.
       </p>
       <LoginForm next={next} />
     </main>

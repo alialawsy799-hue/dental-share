@@ -24,6 +24,16 @@ function actor(db: Database, id: string): Actor {
 const patientNames = ["نور الهدى عبد الله", "حسين مازن كريم", "رنا صالح مهدي", "دانا كمال رشيد"];
 
 describe("إدارة العيادات من المنصة", () => {
+  it("يملك حساب نظام حجوزات جاهز لعيادة النور", () => {
+    const db = createDatabase();
+    const desk = db.users.find((user) => user.id === IDS.deskNoor);
+    expect(desk?.email).toBe("noor.clinic@dentalshare.demo");
+    expect(desk?.password).toBe("NoorClinic@2026");
+    expect(desk?.role).toBe("clinic_desk");
+    expect(homeForRole(desk!.role)).toBe("/desk");
+    expect(db.clinics.find((clinic) => clinic.id === IDS.clinicA)?.access?.systemPassword).toBe("NoorClinic@2026");
+  });
+
   it("يعرض ملفات العيادات بلا أسماء مرضى أو ملاحظات طبية", () => {
     const db = createDatabase();
     const raw = JSON.stringify(listClinicDossiers(db, actor(db, IDS.admin)));
@@ -73,7 +83,7 @@ describe("إدارة العيادات من المنصة", () => {
       doctorName: "د. هدى سالم",
     });
     expect(result.ok).toBe(true);
-    expect(db.users.filter((user) => user.clinicId === IDS.clinicA).length).toBe(before + 2);
+    expect(db.users.filter((user) => user.clinicId === IDS.clinicA).length).toBe(before + 1);
     expect(db.users.find((user) => user.id === IDS.ahmed)?.email).toBe("ahmed@dentalshare.demo");
     const clinic = db.clinics.find((item) => item.id === IDS.clinicA);
     expect(clinic?.systemEmail).toMatch(/noor\.clinic/);
@@ -109,7 +119,7 @@ describe("إدارة العيادات من المنصة", () => {
     db.users.push({
       ...owner!,
       id: "user_old_system",
-      email: "noor.clinic@dentalshare.demo",
+      email: "legacy.clinic@dentalshare.demo",
       name: "عيادة النور",
       title: "حساب نظام العيادة",
       permissions: owner!.permissions,
