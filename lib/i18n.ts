@@ -53,6 +53,7 @@ const dictionary = {
 
     clinicTitle: "عيادتي",
     clinicTagline: "نظام تشغيل العيادة: المرضى، الحجوزات، المخزون، والمصروف من لوحة واحدة",
+    clinicHubTagline: "اختر القسم الذي تريد الدخول إليه",
     hubOverview: "نظرة عامة",
     clinicPulse: "نبض العيادة الآن",
     teamOnDuty: "الفريق",
@@ -186,6 +187,7 @@ const dictionary = {
 
     clinicTitle: "My Clinic",
     clinicTagline: "Clinic operating system: patients, bookings, stock, and expenses in one console",
+    clinicHubTagline: "Choose a section to open",
     hubOverview: "Overview",
     clinicPulse: "Clinic pulse",
     teamOnDuty: "Team",
