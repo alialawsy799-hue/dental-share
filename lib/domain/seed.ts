@@ -705,6 +705,7 @@ export function createDatabase(): Database {
       { id: "prod_suture", storeId: IDS.storeNaqa, name: "خيوط جراحية", brand: "نقاء", category: "سيرجكال", priceIqd: 14_000, stock: 20, unit: "علبة", published: true, sku: "SUT-3", description: "خيوط امتصاص للجراحة الفموية." },
     ],
     scannerRequests: [],
+    zipRequests: [],
     carts: [{ id: "cart_ahmed", clinicId: IDS.clinicA, userId: IDS.ahmed, lines: [{ productId: IDS.prodGlove, qty: 1 }] }],
     commerceOrders: [
       {

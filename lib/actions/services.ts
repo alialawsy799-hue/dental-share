@@ -5,7 +5,9 @@ import { redirect } from "next/navigation";
 import { safeReturn, type ActionState } from "@/lib/actions/types";
 import { AccessError } from "@/lib/domain/errors";
 import { addLabNote, createLabOrder, requestRemake, transitionLab } from "@/lib/domain/lab";
-import { createScannerRequest } from "@/lib/domain/scanner";
+import { createCourierNow, createScannerRequest } from "@/lib/domain/scanner";
+import { sendTelegramMessage } from "@/lib/telegram";
+import { createZipCaseRequest } from "@/lib/domain/zip";
 import { getDb } from "@/lib/demo/db";
 import { requireActor } from "@/lib/demo/session";
 import type { Attachment, LabStatus } from "@/lib/domain/types";
@@ -48,6 +50,71 @@ export async function createRequestAction(_prev: ActionState, formData: FormData
     if (!result.ok) return { error: result.error, fieldErrors: result.fieldErrors };
     revalidatePath("/app/services");
     redirect(`/app/services/orders/${result.data.id}?notice=lab_created`);
+  } catch (error) {
+    if (error instanceof AccessError) return { error: error.message };
+    throw error;
+  }
+}
+
+export async function createZipCaseAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const actor = await requireActor();
+  const uploaded = formData.get("file");
+  const file =
+    uploaded instanceof File && uploaded.size > 0
+      ? { name: uploaded.name, mime: uploaded.type || "application/zip", size: uploaded.size }
+      : undefined;
+  try {
+    const result = createZipCaseRequest(getDb(), actor, {
+      note: String(formData.get("note") ?? ""),
+      file,
+    });
+    if (!result.ok) return { error: result.error, fieldErrors: result.fieldErrors };
+    revalidatePath("/app/services");
+    revalidatePath("/app/services/lab");
+    redirect("/app/services/lab?notice=zip_created");
+  } catch (error) {
+    if (error instanceof AccessError) return { error: error.message };
+    throw error;
+  }
+}
+
+export async function requestCourierNowAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const actor = await requireActor();
+  if (!process.env.TELEGRAM_BOT_TOKEN?.trim() || !process.env.TELEGRAM_CHAT_ID?.trim()) {
+    return { error: "بوت تلغرام غير مضبوط. أضف TELEGRAM_BOT_TOKEN و TELEGRAM_CHAT_ID." };
+  }
+  const db = getDb();
+  const clinic = db.clinics.find((item) => item.id === actor.clinicId);
+  const location = String(formData.get("location") ?? "").trim() || `${clinic?.city ?? ""} · ${clinic?.district ?? ""} · ${clinic?.address ?? ""}`;
+  const note = String(formData.get("note") ?? "");
+  try {
+    const result = createCourierNow(db, actor, { note, location });
+    if (!result.ok) return { error: result.error, fieldErrors: result.fieldErrors };
+    const when = new Intl.DateTimeFormat("ar-IQ", {
+      numberingSystem: "latn",
+      timeZone: "Asia/Baghdad",
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date());
+    const telegram = await sendTelegramMessage(
+      [
+        "طلب مندوب سكنر",
+        "",
+        `الطبيب: ${actor.name}`,
+        `العيادة: ${clinic?.name ?? "عيادة"}`,
+        `الوقت: ${when}`,
+        `الموقع: ${location}`,
+        `الملاحظات: ${result.data.note}`,
+      ].join("\n"),
+    );
+    if (!telegram.ok) return { error: telegram.error };
+    revalidatePath("/app/services");
+    revalidatePath("/app/services/lab");
+    redirect("/app/services/lab?notice=scanner_created");
   } catch (error) {
     if (error instanceof AccessError) return { error: error.message };
     throw error;

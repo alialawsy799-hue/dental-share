@@ -8,6 +8,7 @@ export interface ScannerInput {
   dueAt: string;
   time?: string;
   note: string;
+  location?: string;
   link: "case" | "patient" | "none";
   caseId?: string;
   patientId?: string;
@@ -66,6 +67,7 @@ export function createScannerRequest(db: Database, actor: Actor, input: ScannerI
     mode: input.mode,
     dueAt: `${input.dueAt}T${hour}:00+03:00`,
     note,
+    location: input.location,
     caseCode,
     caseId,
     patientId,
@@ -74,4 +76,32 @@ export function createScannerRequest(db: Database, actor: Actor, input: ScannerI
   };
   db.scannerRequests.push(row);
   return ok(row);
+}
+
+export function createCourierNow(
+  db: Database,
+  actor: Actor,
+  input: { note: string; location: string },
+): Result<ScannerRequest> {
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Baghdad",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(now);
+  const pick = (type: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === type)?.value ?? "00";
+  const baghdad = `${pick("year")}-${pick("month")}-${pick("day")}`;
+  const clock = `${pick("hour")}:${pick("minute")}`;
+  return createScannerRequest(db, actor, {
+    mode: "courier",
+    dueAt: baghdad,
+    time: clock,
+    note: input.note,
+    location: input.location,
+    link: "none",
+  });
 }

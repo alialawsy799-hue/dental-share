@@ -5,7 +5,7 @@ import { ensureAllClinicSupplies } from "@/lib/domain/inventory";
 import { createDatabase } from "@/lib/domain/seed";
 import { IDS, type Chair, type Clinic, type Database, type Subscription, type User } from "@/lib/domain/types";
 
-const SEED_VERSION = 5;
+const SEED_VERSION = 6;
 const EXTRA_COOKIE = "ds_extra";
 
 type Store = { version: number; db: Database };

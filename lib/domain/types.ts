@@ -395,11 +395,22 @@ export interface ScannerRequest {
   mode: "courier" | "booking";
   dueAt: string;
   note: string;
+  location?: string;
   caseCode: string;
   caseId?: string;
   patientId?: string;
   status: "submitted" | "scheduled" | "done";
   createdAt: string;
+}
+
+export interface ZipCaseRequest {
+  id: string;
+  clinicId: string;
+  doctorId: string;
+  note: string;
+  file: Attachment;
+  createdAt: string;
+  status: "submitted";
 }
 
 export interface Store {
@@ -560,6 +571,7 @@ export interface Database {
   labInvoices: LabInvoice[];
   serviceOrders: ServiceOrder[];
   scannerRequests: ScannerRequest[];
+  zipRequests: ZipCaseRequest[];
   providers: ProviderOrg[];
   stores: Store[];
   products: Product[];
