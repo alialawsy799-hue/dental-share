@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import { safeReturn, type ActionState } from "@/lib/actions/types";
 import { AccessError } from "@/lib/domain/errors";
 import { addLabNote, createLabOrder, requestRemake, transitionLab } from "@/lib/domain/lab";
-import { createServiceOrder } from "@/lib/domain/services";
 import { getDb } from "@/lib/demo/db";
 import { requireActor } from "@/lib/demo/session";
 import type { Attachment, LabStatus } from "@/lib/domain/types";
@@ -29,35 +28,16 @@ export async function createRequestAction(_prev: ActionState, formData: FormData
   const kind = String(formData.get("kind") ?? "lab");
   const db = getDb();
   try {
-    if (kind === "lab") {
-      const result = createLabOrder(db, actor, {
-        link: String(formData.get("link") ?? "case") as "case" | "patient" | "code",
-        caseId: String(formData.get("caseId") ?? ""),
-        patientId: String(formData.get("patientId") ?? ""),
-        caseCode: String(formData.get("caseCode") ?? ""),
-        workType: String(formData.get("workType") ?? ""),
-        teeth: teeth(String(formData.get("teeth") ?? "")),
-        shade: String(formData.get("shade") ?? ""),
-        material: String(formData.get("material") ?? ""),
-        dueAt: String(formData.get("dueAt") ?? ""),
-        priority: String(formData.get("priority") ?? "normal") as "normal" | "urgent",
-        note: String(formData.get("note") ?? ""),
-        shareConsent: formData.get("shareConsent") === "on",
-        attachments: attachments(formData),
-      });
-      if (!result.ok) return { error: result.error, fieldErrors: result.fieldErrors };
-      revalidatePath("/app/services");
-      redirect(`/app/services/orders/${result.data.id}?notice=lab_created`);
-    }
-    const result = createServiceOrder(db, actor, {
-      kind: kind as "cbct" | "opg" | "ortho",
+    if (kind !== "lab") return { error: "الخدمة المتاحة حالياً هي المختبر المركزي فقط." };
+    const result = createLabOrder(db, actor, {
       link: String(formData.get("link") ?? "case") as "case" | "patient" | "code",
       caseId: String(formData.get("caseId") ?? ""),
       patientId: String(formData.get("patientId") ?? ""),
       caseCode: String(formData.get("caseCode") ?? ""),
-      purpose: String(formData.get("purpose") ?? ""),
-      region: String(formData.get("region") ?? ""),
-      instructions: String(formData.get("instructions") ?? ""),
+      workType: String(formData.get("workType") ?? ""),
+      teeth: teeth(String(formData.get("teeth") ?? "")),
+      shade: String(formData.get("shade") ?? ""),
+      material: String(formData.get("material") ?? ""),
       dueAt: String(formData.get("dueAt") ?? ""),
       priority: String(formData.get("priority") ?? "normal") as "normal" | "urgent",
       note: String(formData.get("note") ?? ""),
@@ -66,7 +46,7 @@ export async function createRequestAction(_prev: ActionState, formData: FormData
     });
     if (!result.ok) return { error: result.error, fieldErrors: result.fieldErrors };
     revalidatePath("/app/services");
-    redirect(`/app/services/orders/${result.data.id}?notice=service_created`);
+    redirect(`/app/services/orders/${result.data.id}?notice=lab_created`);
   } catch (error) {
     if (error instanceof AccessError) return { error: error.message };
     throw error;

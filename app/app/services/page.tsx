@@ -6,18 +6,10 @@ import { getDb } from "@/lib/demo/db";
 import { requireActor } from "@/lib/demo/session";
 import { AccessError } from "@/lib/domain/errors";
 import { has } from "@/lib/domain/guard";
-import { labStatusLabel, serviceKindLabel, serviceStatusLabel } from "@/lib/domain/labels";
+import { labStatusLabel } from "@/lib/domain/labels";
 import { listClinicLabOrders } from "@/lib/domain/lab";
-import { listClinicServiceOrders } from "@/lib/domain/services";
-import { getLang, t, type Dict } from "@/lib/i18n";
+import { getLang, t } from "@/lib/i18n";
 import { accessResponse } from "@/lib/ui/access";
-
-const cards: { kind: "lab" | "ortho" | "cbct" | "opg"; title: keyof Dict; body: keyof Dict; icon: IconName }[] = [
-  { kind: "lab", title: "centralLab", body: "centralLabBody", icon: "lab" },
-  { kind: "ortho", title: "ortho", body: "orthoBody", icon: "braces" },
-  { kind: "cbct", title: "cbct", body: "cbctBody", icon: "scan" },
-  { kind: "opg", title: "opg", body: "opgBody", icon: "panorama" },
-];
 
 const workEn: Record<string, string> = {
   "تاج": "Crown",
@@ -68,24 +60,14 @@ export default async function ServicesPage() {
   let rows: { id: string; title: string; code: string; status: string; tone: "violet" | "amber" | "green" | "rose"; icon: IconName }[] = [];
   try {
     if (has(actor, "lab.read")) {
-      rows = [
-        ...listClinicLabOrders(db, actor).map((order) => ({
-          id: order.id,
-          title: lang === "en" ? workEn[order.workType] ?? order.workType : order.workType,
-          code: order.caseCode,
-          status: lang === "en" ? statusEn[order.status] ?? order.status : labStatusLabel[order.status],
-          tone: toneOf(order.status),
-          icon: "lab" as const,
-        })),
-        ...listClinicServiceOrders(db, actor).map((order) => ({
-          id: order.id,
-          title: lang === "en" ? order.kind.toUpperCase() : serviceKindLabel[order.kind],
-          code: order.caseCode,
-          status: lang === "en" ? statusEn[order.status] ?? order.status : serviceStatusLabel[order.status],
-          tone: toneOf(order.status),
-          icon: (order.kind === "ortho" ? "braces" : order.kind === "opg" ? "panorama" : "scan") as IconName,
-        })),
-      ];
+      rows = listClinicLabOrders(db, actor).map((order) => ({
+        id: order.id,
+        title: lang === "en" ? workEn[order.workType] ?? order.workType : order.workType,
+        code: order.caseCode,
+        status: lang === "en" ? statusEn[order.status] ?? order.status : labStatusLabel[order.status],
+        tone: toneOf(order.status),
+        icon: "lab" as const,
+      }));
     }
   } catch (error) {
     return accessResponse(error);
@@ -95,22 +77,18 @@ export default async function ServicesPage() {
     <LangPage lang={lang}>
       <PageTitle title={d.servicesTitle} subtitle={d.servicesTagline} />
 
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        {cards.map((card) => (
-          <article key={card.kind} className="glass flex min-h-[196px] flex-col rounded-[22px] p-4 shadow-card">
-            <IconBadge name={card.icon} />
-            <h2 className="mt-3 text-[16px] font-extrabold leading-5 text-plum">{d[card.title]}</h2>
-            <p className="mt-1 flex-1 text-[12px] leading-5 text-muted">{d[card.body]}</p>
-            <Link
-              href={`/app/services/new?kind=${card.kind}`}
-              className="btn-violet mt-3 inline-flex h-10 items-center justify-center gap-1 rounded-xl text-[13px] font-bold"
-            >
-              <Icon name="plus" className="h-4 w-4" />
-              {d.createRequest}
-            </Link>
-          </article>
-        ))}
-      </div>
+      <article className="glass mt-5 flex min-h-[196px] flex-col rounded-[22px] p-4 shadow-card">
+        <IconBadge name="lab" />
+        <h2 className="mt-3 text-[16px] font-extrabold leading-5 text-plum">{d.centralLab}</h2>
+        <p className="mt-1 flex-1 text-[12px] leading-5 text-muted">{d.centralLabBody}</p>
+        <Link
+          href="/app/services/new?kind=lab"
+          className="btn-violet mt-3 inline-flex h-10 items-center justify-center gap-1 rounded-xl text-[13px] font-bold"
+        >
+          <Icon name="plus" className="h-4 w-4" />
+          {d.createRequest}
+        </Link>
+      </article>
 
       <section className="mt-7">
         <SectionHead title={d.trackRequests} hint={d.trackRequestsHint} action={rows.length ? { href: "/app/notifications", label: d.viewAll } : undefined} />

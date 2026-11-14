@@ -92,7 +92,7 @@ const dictionary = {
     noAlerts: "لا تنبيهات حالياً.",
 
     servicesTitle: "الخدمات",
-    servicesTagline: "كل خدمات Dental Share في مكان واحد",
+    servicesTagline: "أرسل طلبات التعويضات إلى المختبر المركزي",
     centralLab: "المختبر المركزي",
     centralLabBody: "تصميم وتصنيع جميع التعويضات السنية",
     ortho: "التقويم",
@@ -225,7 +225,7 @@ const dictionary = {
     noAlerts: "No alerts right now.",
 
     servicesTitle: "Services",
-    servicesTagline: "All Dental Share services in one place",
+    servicesTagline: "Send restoration requests to the central lab",
     centralLab: "Central Lab",
     centralLabBody: "Design and manufacture of all dental restorations",
     ortho: "Orthodontics",
