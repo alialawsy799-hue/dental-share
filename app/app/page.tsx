@@ -39,30 +39,24 @@ export default async function DoctorHome() {
 
       <section className="mt-7">
         <h2 className="text-[19px] font-extrabold text-plum">{d.bookings}</h2>
-        <Glass className="mt-3 overflow-x-auto">
+        <Glass className="mt-3">
           {bookings.length ? (
-            <table className="w-full text-start text-sm">
-              <thead>
-                <tr className="border-b border-line text-[12px] text-muted">
-                  <th className="pb-3 pe-3 font-bold">{d.customerName}</th>
-                  <th className="pb-3 pe-3 font-bold">{d.bookingTime}</th>
-                  <th className="pb-3 font-bold">{d.bookingType}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {bookings.map((row) => (
-                  <tr key={row.id} className="border-b border-line last:border-0">
-                    <td className="py-3 pe-3 font-extrabold text-plum">{row.name}</td>
-                    <td className="py-3 pe-3 font-bold tabular-nums text-plum" dir="ltr">
-                      {row.time}
-                    </td>
-                    <td className="py-3">
-                      <span className="inline-flex rounded-full bg-lavender-deep px-2.5 py-1 text-[12px] font-bold text-violet">{row.type}</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="grid grid-cols-3 text-center">
+              <p className="pb-3 text-[12px] font-bold text-muted">{d.customerName}</p>
+              <p className="pb-3 text-[12px] font-bold text-muted">{d.bookingTime}</p>
+              <p className="pb-3 text-[12px] font-bold text-muted">{d.bookingType}</p>
+              {bookings.map((row) => (
+                <div key={row.id} className="col-span-3 grid grid-cols-3 items-center border-t border-line py-3">
+                  <p className="px-1 text-[13px] font-extrabold leading-5 text-plum">{row.name}</p>
+                  <p className="px-1 text-[13px] font-bold tabular-nums text-plum">
+                    <span dir="ltr">{row.time}</span>
+                  </p>
+                  <p className="px-1">
+                    <span className="inline-flex rounded-full bg-lavender-deep px-2.5 py-1 text-[12px] font-bold text-violet">{row.type}</span>
+                  </p>
+                </div>
+              ))}
+            </div>
           ) : (
             <p className="text-sm text-muted">{d.noAppointments}</p>
           )}
