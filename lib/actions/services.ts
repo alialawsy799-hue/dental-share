@@ -6,7 +6,7 @@ import { safeReturn, type ActionState } from "@/lib/actions/types";
 import { AccessError } from "@/lib/domain/errors";
 import { addLabNote, createLabOrder, requestRemake, transitionLab } from "@/lib/domain/lab";
 import { createCourierNow, createScannerRequest } from "@/lib/domain/scanner";
-import { sendTelegramMessage } from "@/lib/telegram";
+import { baghdadStamp, clinicTelegramCaption, sendTelegramDocument, sendTelegramMessage, telegramConfigured } from "@/lib/telegram";
 import { createZipCaseRequest } from "@/lib/domain/zip";
 import { getDb } from "@/lib/demo/db";
 import { requireActor } from "@/lib/demo/session";
@@ -58,17 +58,37 @@ export async function createRequestAction(_prev: ActionState, formData: FormData
 
 export async function createZipCaseAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const actor = await requireActor();
+  if (!telegramConfigured()) {
+    return { error: "بوت تلغرام غير مضبوط. أضف TELEGRAM_BOT_TOKEN و TELEGRAM_CHAT_ID." };
+  }
   const uploaded = formData.get("file");
   const file =
     uploaded instanceof File && uploaded.size > 0
       ? { name: uploaded.name, mime: uploaded.type || "application/zip", size: uploaded.size }
       : undefined;
+  const db = getDb();
+  const clinic = db.clinics.find((item) => item.id === actor.clinicId);
+  const location = `${clinic?.city ?? ""} · ${clinic?.district ?? ""} · ${clinic?.address ?? ""}`;
   try {
-    const result = createZipCaseRequest(getDb(), actor, {
+    const result = createZipCaseRequest(db, actor, {
       note: String(formData.get("note") ?? ""),
       file,
     });
     if (!result.ok) return { error: result.error, fieldErrors: result.fieldErrors };
+    const telegram = await sendTelegramDocument({
+      filename: result.data.file.name,
+      mime: result.data.file.mime,
+      bytes: uploaded instanceof File ? await uploaded.arrayBuffer() : new Uint8Array(),
+      caption: clinicTelegramCaption({
+        title: "طلب مختبر — ملف ZIP",
+        doctor: actor.name,
+        clinic: clinic?.name ?? "عيادة",
+        when: baghdadStamp(),
+        location,
+        note: result.data.note,
+      }),
+    });
+    if (!telegram.ok) return { error: telegram.error };
     revalidatePath("/app/services");
     revalidatePath("/app/services/lab");
     redirect("/app/services/lab?notice=zip_created");
@@ -80,7 +100,7 @@ export async function createZipCaseAction(_prev: ActionState, formData: FormData
 
 export async function requestCourierNowAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const actor = await requireActor();
-  if (!process.env.TELEGRAM_BOT_TOKEN?.trim() || !process.env.TELEGRAM_CHAT_ID?.trim()) {
+  if (!telegramConfigured()) {
     return { error: "بوت تلغرام غير مضبوط. أضف TELEGRAM_BOT_TOKEN و TELEGRAM_CHAT_ID." };
   }
   const db = getDb();
@@ -90,26 +110,15 @@ export async function requestCourierNowAction(_prev: ActionState, formData: Form
   try {
     const result = createCourierNow(db, actor, { note, location });
     if (!result.ok) return { error: result.error, fieldErrors: result.fieldErrors };
-    const when = new Intl.DateTimeFormat("ar-IQ", {
-      numberingSystem: "latn",
-      timeZone: "Asia/Baghdad",
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date());
     const telegram = await sendTelegramMessage(
-      [
-        "طلب مندوب سكنر",
-        "",
-        `الطبيب: ${actor.name}`,
-        `العيادة: ${clinic?.name ?? "عيادة"}`,
-        `الوقت: ${when}`,
-        `الموقع: ${location}`,
-        `الملاحظات: ${result.data.note}`,
-      ].join("\n"),
+      clinicTelegramCaption({
+        title: "طلب مندوب سكنر",
+        doctor: actor.name,
+        clinic: clinic?.name ?? "عيادة",
+        when: baghdadStamp(),
+        location,
+        note: result.data.note,
+      }),
     );
     if (!telegram.ok) return { error: telegram.error };
     revalidatePath("/app/services");

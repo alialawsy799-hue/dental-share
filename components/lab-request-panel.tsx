@@ -15,10 +15,10 @@ function ZipForm() {
           {state.error}
         </p>
       ) : null}
-      <Field label="ملف ZIP" hint="ملف واحد بصيغة ZIP حتى 15 ميغابايت." error={state?.fieldErrors?.file}>
+      <Field label="ملف ZIP" hint="يُرسل الملف مع اسم الطبيب والعيادة إلى تلغرام. حتى 15 ميغابايت." error={state?.fieldErrors?.file}>
         <input name="file" type="file" required accept=".zip,application/zip" className={fieldClass} />
       </Field>
-      <Field label="الملاحظات" hint="اكتب المطلوب للمختبر دون اسم المريض أو رقم هاتفه." error={state?.fieldErrors?.note}>
+      <Field label="الملاحظات" hint="تُرسل مع الملف دون اسم المريض أو رقم هاتفه." error={state?.fieldErrors?.note}>
         <textarea name="note" required minLength={8} rows={4} className={`${fieldClass} h-auto py-2`} />
       </Field>
       <SubmitButton>إرسال الملف</SubmitButton>
