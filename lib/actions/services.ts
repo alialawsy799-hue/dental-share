@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { safeReturn, type ActionState } from "@/lib/actions/types";
 import { AccessError } from "@/lib/domain/errors";
 import { addLabNote, createLabOrder, requestRemake, transitionLab } from "@/lib/domain/lab";
+import { createScannerRequest } from "@/lib/domain/scanner";
 import { getDb } from "@/lib/demo/db";
 import { requireActor } from "@/lib/demo/session";
 import type { Attachment, LabStatus } from "@/lib/domain/types";
@@ -47,6 +48,27 @@ export async function createRequestAction(_prev: ActionState, formData: FormData
     if (!result.ok) return { error: result.error, fieldErrors: result.fieldErrors };
     revalidatePath("/app/services");
     redirect(`/app/services/orders/${result.data.id}?notice=lab_created`);
+  } catch (error) {
+    if (error instanceof AccessError) return { error: error.message };
+    throw error;
+  }
+}
+
+export async function createScannerAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const actor = await requireActor();
+  try {
+    const result = createScannerRequest(getDb(), actor, {
+      mode: String(formData.get("mode") ?? "courier") as "courier" | "booking",
+      dueAt: String(formData.get("dueAt") ?? ""),
+      time: String(formData.get("time") ?? ""),
+      note: String(formData.get("note") ?? ""),
+      link: String(formData.get("link") ?? "none") as "case" | "patient" | "none",
+      caseId: String(formData.get("caseId") ?? ""),
+      patientId: String(formData.get("patientId") ?? ""),
+    });
+    if (!result.ok) return { error: result.error, fieldErrors: result.fieldErrors };
+    revalidatePath("/app/services");
+    redirect(`/app/services/scanner/${result.data.id}?notice=scanner_created`);
   } catch (error) {
     if (error instanceof AccessError) return { error: error.message };
     throw error;

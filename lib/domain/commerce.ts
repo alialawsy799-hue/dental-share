@@ -70,6 +70,11 @@ export function listCatalog(db: Database, actor: Actor) {
   return db.products.filter((product) => product.published && active.has(product.storeId));
 }
 
+export function listDepartmentProducts(db: Database, actor: Actor, categories: readonly string[]) {
+  const allowed = new Set(categories);
+  return listCatalog(db, actor).filter((product) => allowed.has(product.category));
+}
+
 export function listStores(db: Database, actor: Actor, query = "", category = "") {
   requirePermission(actor, "commerce.buy");
   const needle = query.trim();

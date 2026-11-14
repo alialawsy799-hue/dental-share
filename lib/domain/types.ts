@@ -388,6 +388,20 @@ export interface ServiceOrder {
   shareConsent: boolean;
 }
 
+export interface ScannerRequest {
+  id: string;
+  clinicId: string;
+  doctorId: string;
+  mode: "courier" | "booking";
+  dueAt: string;
+  note: string;
+  caseCode: string;
+  caseId?: string;
+  patientId?: string;
+  status: "submitted" | "scheduled" | "done";
+  createdAt: string;
+}
+
 export interface Store {
   id: string;
   slug: string;
@@ -545,6 +559,7 @@ export interface Database {
   labOrders: LabOrder[];
   labInvoices: LabInvoice[];
   serviceOrders: ServiceOrder[];
+  scannerRequests: ScannerRequest[];
   providers: ProviderOrg[];
   stores: Store[];
   products: Product[];

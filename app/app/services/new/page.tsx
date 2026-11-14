@@ -16,7 +16,7 @@ export default async function NewServicePage() {
   const cases = listCases(db, actor).map((item) => ({ id: item.id, label: `${item.code} · ${item.title}` }));
   return (
     <div>
-      <PageIntro title="طلب جديد" description="الطلب يُرسل إلى المختبر المركزي مباشرة، دون اختيار مختبر من قائمة." />
+      <PageIntro title="إرفاق حالة" description="أرفق ملف الحالة مع الملاحظات اللازمة للمختبر المركزي." />
       <Card>
         <ServiceForm patients={patients} cases={cases} />
       </Card>

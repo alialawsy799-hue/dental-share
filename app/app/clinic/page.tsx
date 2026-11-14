@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { type IconName } from "@/components/icons";
-import { IconBadge, PageTitle } from "@/components/purple";
+import { PageTitle } from "@/components/purple";
+import { SectionTiles } from "@/components/section-tiles";
 import { LangPage } from "@/components/shell";
 import { requireActor } from "@/lib/demo/session";
 import { has } from "@/lib/domain/guard";
@@ -23,18 +23,7 @@ export default async function ClinicHubPage() {
   return (
     <LangPage lang={lang}>
       <PageTitle title={d.clinicTitle} subtitle={d.clinicHubTagline} />
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        {sections.map((section) => (
-          <Link
-            key={section.href}
-            href={section.href}
-            className="glass flex aspect-square flex-col items-center justify-center rounded-[22px] p-4 text-center shadow-card"
-          >
-            <IconBadge name={section.icon} size="lg" />
-            <h2 className="mt-4 text-[16px] font-extrabold leading-5 text-plum">{section.label}</h2>
-          </Link>
-        ))}
-      </div>
+      <SectionTiles items={sections} />
     </LangPage>
   );
 }
